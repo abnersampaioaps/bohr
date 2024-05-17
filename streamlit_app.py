@@ -57,23 +57,24 @@ if st.button("+"):
 query = "SELECT * FROM carros"
 df = pd.read_sql_query(query, conn)
 
-# Exibir dados
-st.subheader("Carros Disponíveis:")
-
-# Exibir os carros com as fotos
-for index, row in df.iterrows():
-    col1, col2 = st.columns([1, 2])  # Dividir a linha em duas colunas
-    with col1:
-        if row['foto_path']:
-            st.image(Image.open(row['foto_path']), caption=f"{row['marca']} {row['modelo']}", use_column_width=True)
-        else:
-            st.write("Sem foto disponível")  # Mensagem se não houver foto
-    with col2:
-        st.write(f"**Marca:** {row['marca']}")
-        st.write(f"**Modelo:** {row['modelo']}")
-        st.write(f"**Ano:** {row['ano']}")
-        st.write(f"**Preço:** R$ {row['preco']:.2f}")
-        st.write(f"**Quilometragem:** {row['quilometragem']} km")
+# Verificar se a coluna 'foto_path' existe no DataFrame
+if 'foto_path' not in df.columns:
+    st.error("Coluna 'foto_path' não encontrada no banco de dados.")
+else:
+    # Exibir os carros com as fotos
+    for index, row in df.iterrows():
+        col1, col2 = st.columns([1, 2]) 
+        with col1:
+            if row['foto_path']:
+                st.image(Image.open(row['foto_path']), caption=f"{row['marca']} {row['modelo']}", use_column_width=True)
+            else:
+                st.write("Sem foto disponível") 
+        with col2:
+            st.write(f"**Marca:** {row['marca']}")
+            st.write(f"**Modelo:** {row['modelo']}")
+            st.write(f"**Ano:** {row['ano']}")
+            st.write(f"**Preço:** R$ {row['preco']:.2f}")
+            st.write(f"**Quilometragem:** {row['quilometragem']} km")
 
 # Formulário (visível apenas se show_form for True)
 if st.session_state.show_form:
