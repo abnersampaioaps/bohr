@@ -3,6 +3,7 @@ import pandas as pd
 import sqlite3
 from PIL import Image
 import os
+from streamlit_authenticator import authenticate, Authenticate
 
 # Diretório para armazenar as fotos
 UPLOAD_DIRECTORY = "uploads"
@@ -13,7 +14,17 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 conn = sqlite3.connect('carros.db')
 cursor = conn.cursor()
 
-# Criar tabela se não existir (com coluna para o caminho da foto e email do usuário)
+# Criar tabela de usuários se não existir
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT,
+        password TEXT
+    )
+''')
+
+# Criar tabela de carros se não existir (com coluna para o caminho da foto e email do usuário)
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS carros (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,34 +37,36 @@ cursor.execute('''
         user_email TEXT
     )
 ''')
-conn.commit()  
+conn.commit()
 
-# Estado para controlar o login e a página atual
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
+# Configuração de autenticação (substitua pelos seus dados)
+names = ["Abner Sampaio"]
+usernames = ["abner"]
+passwords = ["sua_senha_criptografada"]  # Use bcrypt ou outra biblioteca para criptografar senhas
 
-# Função para verificar o login (substitua por sua lógica de autenticação real)
-def check_login(email, senha):
-    return email == "usuario@exemplo.com" and senha == "senha123"
+hashed_passwords = Authenticate(
+    names,
+    usernames,
+    passwords,
+    "cookie_name",  # Nome do cookie de autenticação
+    "key",          # Chave secreta para criptografia do cookie
+    cookie_expiry_days=30  # Tempo de expiração do cookie
+)
 
 # Página de login
-if st.session_state.page == "login":
-    st.title("Login")
-    email = st.text_input("Email")
-    senha = st.text_input("Senha", type="password")
-    if st.button("Entrar"):
-        if check_login(email, senha):
-            st.session_state.logged_in = True
-            st.session_state.user_email = email  # Armazenar o email do usuário
-            st.session_state.page = "disponiveis"
-            st.experimental_rerun()
-        else:
-            st.error("Email ou senha incorretos")
+name, authentication_status, username = authenticate(
+    hashed_passwords,
+    "main_page",  # Nome da página principal
+    "authentication_key",  # Chave para armazenar o status de autenticação na sessão
+    "cookie_name",
+    "key",
+    "location"
+)
 
-# Restante do aplicativo (visível apenas se o usuário estiver logado)
-if st.session_state.logged_in:
+if authentication_status:
+    st.write(f'Bem-vindo *{name}*')
+    st.title('Compartilhamento de Estoque de Carros')
+
     # Menu lateral
     st.sidebar.title("Menu")
     page = st.sidebar.radio("Selecione a página:", ["Disponíveis", "Meus Carros"])
@@ -155,3 +168,8 @@ if st.session_state.logged_in:
                     conn.commit()
                     st.session_state.show_form = False 
                     st.experimental_rerun() 
+
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
