@@ -4,6 +4,11 @@ import sqlite3
 from PIL import Image
 import os
 from streamlit_authenticator import authenticate, Authenticate
+import bcrypt
+
+senha_em_texto_plano = "sua_senha"
+salt = bcrypt.gensalt()  # Gere um salt aleatório
+senha_criptografada = bcrypt.hashpw(senha_em_texto_plano.encode(), salt)
 
 # Diretório para armazenar as fotos
 UPLOAD_DIRECTORY = "uploads"
@@ -42,7 +47,7 @@ conn.commit()
 # Configuração de autenticação (substitua pelos seus dados)
 names = ["Abner Sampaio"]
 usernames = ["abner"]
-passwords = ["sua_senha_criptografada"]  # Use bcrypt ou outra biblioteca para criptografar senhas
+passwords = [senha_criptografada]  # Use bcrypt ou outra biblioteca para criptografar senhas
 
 hashed_passwords = Authenticate(
     names,
