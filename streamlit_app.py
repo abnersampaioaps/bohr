@@ -128,7 +128,7 @@ if st.session_state.page == "login":
                     conn.commit()
                     st.success("Conta criada com sucesso!")
                     st.session_state.page = "login"  # Voltar para a página de login
-                    st.experimental_rerun()
+                    st.rerun()
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
 if st.session_state.logged_in:
