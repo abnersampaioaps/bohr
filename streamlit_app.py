@@ -5,6 +5,9 @@ from PIL import Image
 import os
 from streamlit_authenticator import authenticate, Authenticate
 import bcrypt
+# Conectar ao banco de dados (ou criar se não existir)
+conn = sqlite3.connect('carros.db')
+cursor = conn.cursor()
 
 senha = "senha_de_teste"  # Senha em texto plano
 salt = bcrypt.gensalt()
@@ -21,9 +24,7 @@ UPLOAD_DIRECTORY = "uploads"
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
-# Conectar ao banco de dados (ou criar se não existir)
-conn = sqlite3.connect('carros.db')
-cursor = conn.cursor()
+
 
 # Criar tabela de usuários se não existir
 cursor.execute('''
