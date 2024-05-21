@@ -80,14 +80,15 @@ if 'page' not in st.session_state:
 if 'show_registration' not in st.session_state:
     st.session_state.show_registration = False
 
-# Página de login
-name, authentication_status, username = authenticator.login(
-    fields=[
-        {"title": "Login de Usuário"},
-        {"name": "username", "label": "Email"},
-        {"name": "password", "label": "Senha", "type": "password"}
-    ],
-)
+# # Página de login
+# name, authentication_status, username = authenticator.login(
+#     fields=[
+#         {"title": "Login de Usuário"},
+#         {"name": "username", "label": "Email"},
+#         {"name": "password", "label": "Senha", "type": "password"}
+#     ],
+#     key='login_form'  # Adicione uma chave única aqui
+# )
 
 if authentication_status:
     st.session_state.logged_in = True
