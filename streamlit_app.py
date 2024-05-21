@@ -53,9 +53,6 @@ cursor.execute('''
 conn.commit()
 
 def _is_bcrypt_hash(hash_string):
-    if isinstance(hash_string, bytes):
-        hash_string = hash_string.decode('utf-8')
-
     bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
     return bool(bcrypt_regex.match(hash_string))
 
