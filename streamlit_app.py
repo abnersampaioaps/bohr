@@ -5,6 +5,7 @@ from PIL import Image
 import os
 from streamlit_authenticator import Authenticate
 import bcrypt
+import re
 
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
@@ -50,6 +51,14 @@ cursor.execute('''
     )
 ''')
 conn.commit()
+
+def _is_bcrypt_hash(hash_string):
+    # Decodificar o hash de bytes para string
+    hash_string = hash_string.decode('utf-8')
+
+    # Expressão regular para verificar o hash bcrypt
+    bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
+    return bool(bcrypt_regex.match(hash_string))
 
 # Configuração de autenticação
 cursor.execute("SELECT name, email, password FROM users")
