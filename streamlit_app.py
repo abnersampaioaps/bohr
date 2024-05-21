@@ -44,29 +44,32 @@ cursor.execute('''
 ''')
 conn.commit()
 
-# Configuração de autenticação (substitua pelos seus dados)
-names = ["Abner Sampaio"]
-usernames = ["abner"]
-passwords = [senha_criptografada]  # Use bcrypt ou outra biblioteca para criptografar senhas
+# Configuração de autenticação
+cursor.execute("SELECT name, email, password FROM users")
+data = cursor.fetchall()
+names = [user[0] for user in data]
+usernames = [user[1] for user in data]
+passwords = [user[2] for user in data]  # Recuperar os hashes do banco de dados
 
 hashed_passwords = Authenticate(
     names,
     usernames,
     passwords,
-    "cookie_name",  # Nome do cookie de autenticação
-    "key",          # Chave secreta para criptografia do cookie
-    cookie_expiry_days=30  # Tempo de expiração do cookie
+    "cookie_name",
+    "key",
+    cookie_expiry_days=30
 )
 
 # Página de login
 name, authentication_status, username = authenticate(
     hashed_passwords,
-    "main_page",  # Nome da página principal
-    "authentication_key",  # Chave para armazenar o status de autenticação na sessão
+    "main_page",
+    "authentication_key",
     "cookie_name",
     "key",
     "location"
 )
+
 
 if authentication_status:
     st.write(f'Bem-vindo *{name}*')
