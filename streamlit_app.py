@@ -77,6 +77,8 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'page' not in st.session_state:  
     st.session_state.page = "login"
+if 'show_registration' not in st.session_state:
+    st.session_state.show_registration = False
 
 # Página de login
 name, authentication_status, username = authenticator.login(
@@ -97,20 +99,29 @@ elif authentication_status == None:
     st.session_state.page = "login"
 
 if st.session_state.page == "login":
-    st.title("Login ou Cadastro")
+    st.title("Login")
 
-    # Opções de login ou cadastro
-    opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"])
-
-    if opcao == "Login":
-        if authentication_status:
-            st.write(f'Bem-vindo *{name}*')
-            st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
+    if not st.session_state.show_registration:
+        if authentication_status == None:
+            # Opção de login
+            st.subheader("Login")
+            name, authentication_status, username = authenticator.login(
+                fields=[
+                    {"name": "username", "label": "Email"},
+                    {"name": "password", "label": "Senha", "type": "password"}
+                ]
+            )
+            if authentication_status:
+                st.write(f'Bem-vindo *{name}*')
+                st.session_state.page = "disponiveis"
+                st.experimental_rerun()
+            elif authentication_status == False:
+                st.error('Username/password is incorrect')
+        # Botão para mostrar o formulário de cadastro
+        if st.button("Ainda não tenho cadastro"):
+            st.session_state.show_registration = True
             st.experimental_rerun()
-        elif authentication_status == False:
-            st.error('Username/password is incorrect')
-
-    elif opcao == "Cadastro":
+    else:
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
             nome = st.text_input("Nome")
@@ -135,8 +146,9 @@ if st.session_state.page == "login":
                     ''', (nome, email, hashed_password.decode('utf-8')))
                     conn.commit()
                     st.success("Conta criada com sucesso!")
-                    st.session_state.page = "login"  # Voltar para a página de login
+                    st.session_state.show_registration = False  # Voltar para a página de login
                     st.experimental_rerun()
+
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
 if st.session_state.logged_in:
