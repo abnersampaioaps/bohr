@@ -56,10 +56,6 @@ def _is_bcrypt_hash(hash_string):
     bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
     return bool(bcrypt_regex.match(hash_string))
 
-# Inicializar o estado de login
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-
 # Configuração de autenticação
 cursor.execute("SELECT name, email, CAST(password AS TEXT) FROM users") 
 data = cursor.fetchall()
@@ -81,7 +77,13 @@ if 'logged_in' not in st.session_state:
 if 'page' not in st.session_state:  # Add this line to initialize the 'page' attribute
     st.session_state.page = "login"
 # Página de login
-
+name, authentication_status, username = authenticator.login(
+    fields=[
+        {"title": "Login de Usuário"},
+        {"name": "username", "label": "Email"},
+        {"name": "password", "label": "Senha", "type": "password"}
+    ]
+)
 if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
