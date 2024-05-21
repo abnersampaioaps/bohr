@@ -86,17 +86,17 @@ name, authentication_status, username = authenticator.login(
         {"title": "Login de Usuário"},
         {"name": "username", "label": "Email"},
         {"name": "password", "label": "Senha", "type": "password"}
-    ]
+    ],
+    key='login_form'  # Adicione uma chave única aqui
 )
 
 if authentication_status:
     st.session_state.logged_in = True
     st.session_state.user_email = username  # Definir email do usuário no session state
     st.session_state.page = "disponiveis"
+    st.experimental_rerun()
 elif authentication_status == False:
     st.error('Username/password is incorrect')
-elif authentication_status == None:
-    st.session_state.page = "login"
 
 if st.session_state.page == "login":
     st.title("Login")
@@ -109,7 +109,8 @@ if st.session_state.page == "login":
                 fields=[
                     {"name": "username", "label": "Email"},
                     {"name": "password", "label": "Senha", "type": "password"}
-                ]
+                ],
+                key='login_form_inner'  # Adicione uma chave única aqui
             )
             if authentication_status:
                 st.write(f'Bem-vindo *{name}*')
