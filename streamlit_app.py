@@ -77,7 +77,9 @@ authenticator = Authenticate(
 )
 
 # Página de login
-# Página de login/cadastro
+authentication_status = None # Inicializa a variável com None
+name = None
+username = None
 if 'page' not in st.session_state:
     st.session_state.page = "login"
 
