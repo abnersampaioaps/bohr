@@ -29,7 +29,7 @@ cursor.execute('''
 cursor.execute('''
     INSERT INTO users (name, email, password) 
     VALUES (?, ?, ?)
-''', ("Seu Nome", "seu_email@exemplo.com", hashed_password))
+''', ("Seu Nome", "seu_email@exemplo.com", hashed_password.decode('utf-8')))
 conn.commit()
 
 # Diretório para armazenar as fotos
@@ -54,7 +54,7 @@ conn.commit()
 
 def _is_bcrypt_hash(hash_string):
     bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
-    return bool(bcrypt_regex.match(hash_string))
+    return bool(bcrypt_regex.match(hash_string.decode('utf-8')))
 
 # Configuração de autenticação
 cursor.execute("SELECT name, email, password FROM users") 
@@ -132,7 +132,7 @@ if st.session_state.page == "login":
                     cursor.execute('''
                         INSERT INTO users (name, email, password)
                         VALUES (?, ?, ?)
-                    ''', (nome, email, hashed_password))
+                    ''', (nome, email, hashed_password.decode('utf-8')))
                     conn.commit()
                     st.success("Conta criada com sucesso!")
                     st.session_state.page = "login"  # Voltar para a página de login
