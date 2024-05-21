@@ -61,7 +61,8 @@ credentials = {
     "passwords": {user[1]: user[2] for user in data} # email: password
 }
 
-hashed_passwords = Hasher(credentials['passwords']).generate()
+hasher = Hasher(credentials['passwords']) # Criar o objeto Hasher
+hashed_passwords = hasher.generate() # Gerar os hashes
 
 authenticator = Authenticate(
     credentials,
