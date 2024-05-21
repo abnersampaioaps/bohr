@@ -54,28 +54,23 @@ conn.commit()
 # Configuração de autenticação
 cursor.execute("SELECT name, email, password FROM users")
 data = cursor.fetchall()
-names = [user[0] for user in data]
-usernames = [user[1] for user in data]
-passwords = [user[2] for user in data]  # Recuperar os hashes do banco de dados
+credentials = {
+    "names": {user[1]: user[0] for user in data}, # email: name
+    "usernames": {user[1]: user[1] for user in data}, # email: email
+    "passwords": {user[1]: user[2] for user in data} # email: password
+}
 
-hashed_passwords = Authenticate(
-    names,
-    usernames,
-    passwords,
-    "cookie_name",
-    "key",
-    cookie_expiry_days=30
+hashed_passwords = Hasher(credentials['passwords']).generate()
+
+authenticator = Authenticate(
+    credentials,
+    "cookie_name",  
+    "key",          
+    cookie_expiry_days=30  
 )
 
 # Página de login
-name, authentication_status, username = authenticate(
-    hashed_passwords,
-    "main_page",
-    "authentication_key",
-    "cookie_name",
-    "key",
-    "location"
-)
+name, authentication_status, username = authenticator.login('Login', 'main')
 
 
 if authentication_status:
