@@ -93,7 +93,7 @@ if authentication_status:
     st.session_state.logged_in = True
     st.session_state.user_email = username  # Definir email do usuário no session state
     st.session_state.page = "disponiveis"
-    st.experimental_rerun()
+    st.rerun()
 elif authentication_status == False:
     st.error('Username/password is incorrect')
 
@@ -116,10 +116,17 @@ if st.session_state.page == "login":
                 st.experimental_rerun()
             elif authentication_status == False:
                 st.error('Username/password is incorrect')
-        # Botão para mostrar o formulário de cadastro
-        if st.button("Ainda não tenho cadastro"):
-            st.session_state.show_registration = True
-            st.rerun()
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Login"):
+                st.session_state.show_registration = False
+                st.experimental_rerun()
+        with col2:
+            if st.button("Cadastrar"):
+                st.session_state.show_registration = True
+                st.rerun()
+
     else:
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
