@@ -74,8 +74,8 @@ authenticator = Authenticate(
 
 # Página de login
 name, authentication_status, username = authenticator.login(
-    'Login',
-    'main',
+    'main_page',  # Nome da página principal - mantido para compatibilidade
+    'authentication_key',
     fields=[
         {"name": "username", "label": "Email"},
         {"name": "password", "label": "Senha", "type": "password"}
