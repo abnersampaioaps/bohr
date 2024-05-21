@@ -55,11 +55,10 @@ conn.commit()
 cursor.execute("SELECT name, email, password FROM users")
 data = cursor.fetchall()
 credentials = {
-    "names": {user[1]: user[0] for user in data}, 
-    "usernames": {user[1]: user[1] for user in data}, 
-    "passwords": {user[1]: user[2] for user in data} 
+    "names": {user[1]: user[0] for user in data},
+    "usernames": {user[1]: {"name": user[0], "email": user[1], "password": user[2]} for user in data},
+    "passwords": {user[1]: user[2] for user in data}
 }
-
 
 authenticator = Authenticate(
     credentials,
@@ -103,6 +102,7 @@ if authentication_status:
                 st.write(f"**Quilometragem:** {row['quilometragem']} km")
 
     elif page == "Meus Carros":
+        
         # Carregar os carros do usuário do banco de dados
         query = "SELECT * FROM carros WHERE user_email = ?"
         df = pd.read_sql_query(query, conn, params=(st.session_state.user_email,))
