@@ -78,9 +78,6 @@ authenticator = Authenticate(
 
 # Página de login
 
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-
 if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
@@ -88,13 +85,6 @@ if st.session_state.page == "login":
     opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"])
 
     if opcao == "Login":
-        name, authentication_status, username = authenticator.login(
-    fields=[
-        {"title": "Login de Usuário"},
-        {"name": "username", "label": "Email"},
-        {"name": "password", "label": "Senha", "type": "password"}
-    ]
-)
         if authentication_status:
             st.write(f'Bem-vindo *{name}*')
             st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
@@ -130,16 +120,19 @@ if st.session_state.page == "login":
                     st.session_state.page = "login"  # Voltar para a página de login
                     st.rerun()
 
+
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
-if st.session_state.logged_in:
+if authentication_status:
     st.write(f'Bem-vindo *{name}*')
     st.title('Compartilhamento de Estoque de Carros')
 
-    # Menu lateral
+    # Menu lateral (movido para fora do bloco condicional)
     st.sidebar.title("Menu")
-    page = st.sidebar.radio("Selecione a página:", ["Disponíveis", "Meus Carros"])
+    page_options = ["Disponíveis", "Meus Carros"]
+    page_placeholder = st.sidebar.empty()
+    page = page_placeholder.radio("Selecione a página:", page_options)
 
-    # Lógica para cada página
+    # Lógica para cada página (mesmo código anterior)
     if page == "Disponíveis":
         # Carregar todos os dados do banco de dados
         query = "SELECT * FROM carros"
