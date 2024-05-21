@@ -87,7 +87,6 @@ name, authentication_status, username = authenticator.login(
         {"name": "username", "label": "Email"},
         {"name": "password", "label": "Senha", "type": "password"}
     ],
-    key='login_form'  # Adicione uma chave única aqui
 )
 
 if authentication_status:
