@@ -25,6 +25,7 @@ cursor.execute('''
     )
 ''')
 
+# Inserir usuário inicial para teste (remover ou modificar em produção)
 cursor.execute('''
     INSERT INTO users (name, email, password) 
     VALUES (?, ?, ?)
@@ -35,7 +36,6 @@ conn.commit()
 UPLOAD_DIRECTORY = "uploads"
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
-
 
 # Criar tabela de carros se não existir (com coluna para o caminho da foto e email do usuário)
 cursor.execute('''
@@ -57,7 +57,7 @@ def _is_bcrypt_hash(hash_string):
     return bool(bcrypt_regex.match(hash_string))
 
 # Configuração de autenticação
-cursor.execute("SELECT name, email, CAST(password AS TEXT) FROM users") 
+cursor.execute("SELECT name, email, password FROM users") 
 data = cursor.fetchall()
 credentials = {
     "names": {user[1]: user[0] for user in data},
@@ -71,11 +71,13 @@ authenticator = Authenticate(
     "key",          
     cookie_expiry_days=30  
 )
+
 # Inicializar o estado de login e página
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
-if 'page' not in st.session_state:  # Add this line to initialize the 'page' attribute
+if 'page' not in st.session_state:  
     st.session_state.page = "login"
+
 # Página de login
 name, authentication_status, username = authenticator.login(
     fields=[
@@ -84,6 +86,16 @@ name, authentication_status, username = authenticator.login(
         {"name": "password", "label": "Senha", "type": "password"}
     ]
 )
+
+if authentication_status:
+    st.session_state.logged_in = True
+    st.session_state.user_email = username  # Definir email do usuário no session state
+    st.session_state.page = "disponiveis"
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.session_state.page = "login"
+
 if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
@@ -94,7 +106,7 @@ if st.session_state.page == "login":
         if authentication_status:
             st.write(f'Bem-vindo *{name}*')
             st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
-            st.rerun()
+            st.experimental_rerun()
         elif authentication_status == False:
             st.error('Username/password is incorrect')
 
@@ -124,21 +136,20 @@ if st.session_state.page == "login":
                     conn.commit()
                     st.success("Conta criada com sucesso!")
                     st.session_state.page = "login"  # Voltar para a página de login
-                    st.rerun()
-
+                    st.experimental_rerun()
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
-if authentication_status:
+if st.session_state.logged_in:
     st.write(f'Bem-vindo *{name}*')
     st.title('Compartilhamento de Estoque de Carros')
 
-    # Menu lateral (movido para fora do bloco condicional)
+    # Menu lateral
     st.sidebar.title("Menu")
     page_options = ["Disponíveis", "Meus Carros"]
     page_placeholder = st.sidebar.empty()
     page = page_placeholder.radio("Selecione a página:", page_options)
 
-    # Lógica para cada página (mesmo código anterior)
+    # Lógica para cada página
     if page == "Disponíveis":
         # Carregar todos os dados do banco de dados
         query = "SELECT * FROM carros"
@@ -161,7 +172,6 @@ if authentication_status:
                 st.write(f"**Quilometragem:** {row['quilometragem']} km")
 
     elif page == "Meus Carros":
-        
         # Carregar os carros do usuário do banco de dados
         query = "SELECT * FROM carros WHERE user_email = ?"
         df = pd.read_sql_query(query, conn, params=(st.session_state.user_email,))
@@ -182,7 +192,7 @@ if authentication_status:
                 st.write(f"**Preço:** R$ {row['preco']:.2f}")
                 st.write(f"**Quilometragem:** {row['quilometragem']} km")
     
-        # Formulário para adicionar novo carro (visível apenas na página "Meus Carros")
+        # Formulário para adicionar novo carro
         if 'show_form' not in st.session_state:
             st.session_state.show_form = False
 
@@ -235,9 +245,4 @@ if authentication_status:
                     ''', (marca, modelo, ano, preco, quilometragem, foto_path, st.session_state.user_email))
                     conn.commit()
                     st.session_state.show_form = False 
-                    st.rerun()
-
-# elif authentication_status == False:
-#     st.error('Username/password is incorrect')
-# elif authentication_status == None:
-#     st.session_state.page == "login"
+                    st.experimental_rerun()
