@@ -73,15 +73,62 @@ authenticator = Authenticate(
 )
 
 # Página de login
-name, authentication_status, username = authenticator.login(
-    fields=[
-        {"title": "Login de Usuário"},
-        {"name": "username", "label": "Email"},
-        {"name": "password", "label": "Senha", "type": "password"}
-    ]
-)
+# Página de login/cadastro
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
 
-if authentication_status:
+if st.session_state.page == "login":
+    st.title("Login ou Cadastro")
+
+    # Opções de login ou cadastro
+    opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"])
+
+    if opcao == "Login":
+        name, authentication_status, username = authenticator.login(
+            'authentication_key',
+            fields=[
+                {"title": "Login de Usuário"},
+                {"name": "username", "label": "Email"},
+                {"name": "password", "label": "Senha", "type": "password"}
+            ]
+        )
+        if authentication_status:
+            st.write(f'Bem-vindo *{name}*')
+            st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
+            st.experimental_rerun()
+        elif authentication_status == False:
+            st.error('Username/password is incorrect')
+
+    elif opcao == "Cadastro":
+        st.subheader("Criar Nova Conta")
+        with st.form("cadastro_form"):
+            nome = st.text_input("Nome")
+            email = st.text_input("Email")
+            senha = st.text_input("Senha", type="password")
+            confirma_senha = st.text_input("Confirmar Senha", type="password")
+
+            if st.form_submit_button("Criar Conta"):
+                if senha != confirma_senha:
+                    st.error("As senhas não coincidem")
+                elif any(email == user[1] for user in data):
+                    st.error("Email já cadastrado")
+                else:
+                    # Criptografar a senha com bcrypt
+                    salt = bcrypt.gensalt()
+                    hashed_password = bcrypt.hashpw(senha.encode('utf-8'), salt)
+
+                    # Inserir o novo usuário no banco de dados
+                    cursor.execute('''
+                        INSERT INTO users (name, email, password)
+                        VALUES (?, ?, ?)
+                    ''', (nome, email, hashed_password))
+                    conn.commit()
+                    st.success("Conta criada com sucesso!")
+                    st.session_state.page = "login"  # Voltar para a página de login
+                    st.experimental_rerun()
+
+# Restante do aplicativo (visível apenas se o usuário estiver logado)
+if st.session_state.logged_in:
     st.write(f'Bem-vindo *{name}*')
     st.title('Compartilhamento de Estoque de Carros')
 
