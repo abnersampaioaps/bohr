@@ -14,6 +14,16 @@ senha = "senha_de_teste"  # Senha em texto plano
 salt = bcrypt.gensalt()
 hashed_password = bcrypt.hashpw(senha.encode('utf-8'), salt)
 
+# Criar tabela de usuários se não existir
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT,
+        password TEXT
+    )
+''')
+
 cursor.execute('''
     INSERT INTO users (name, email, password) 
     VALUES (?, ?, ?)
@@ -25,17 +35,6 @@ UPLOAD_DIRECTORY = "uploads"
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
-
-
-# Criar tabela de usuários se não existir
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT,
-        password TEXT
-    )
-''')
 
 # Criar tabela de carros se não existir (com coluna para o caminho da foto e email do usuário)
 cursor.execute('''
