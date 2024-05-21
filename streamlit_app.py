@@ -98,7 +98,7 @@ if st.session_state.page == "login":
         if authentication_status:
             st.write(f'Bem-vindo *{name}*')
             st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
-            st.experimental_rerun()
+            st.rerun()
         elif authentication_status == False:
             st.error('Username/password is incorrect')
 
@@ -238,7 +238,7 @@ if st.session_state.logged_in:
                     st.session_state.show_form = False 
                     st.rerun()
 
-elif authentication_status == False:
-    st.error('Username/password is incorrect')
-elif authentication_status == None:
-    st.session_state.page == "login"
+# elif authentication_status == False:
+#     st.error('Username/password is incorrect')
+# elif authentication_status == None:
+#     st.session_state.page == "login"
