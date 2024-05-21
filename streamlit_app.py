@@ -76,6 +76,7 @@ authenticator = Authenticate(
 name, authentication_status, username = authenticator.login(
     'authentication_key',  # Chave para armazenar o status de autenticação na sessão
     fields=[
+        {"title": "Login de Usuário"},  # Adicione um título para o formulário
         {"name": "username", "label": "Email"},
         {"name": "password", "label": "Senha", "type": "password"}
     ]
