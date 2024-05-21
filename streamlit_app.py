@@ -6,9 +6,15 @@ import os
 from streamlit_authenticator import authenticate, Authenticate
 import bcrypt
 
-senha_em_texto_plano = "sua_senha"
-salt = bcrypt.gensalt()  # Gere um salt aleatório
-senha_criptografada = bcrypt.hashpw(senha_em_texto_plano.encode(), salt)
+senha = "senha_de_teste"  # Senha em texto plano
+salt = bcrypt.gensalt()
+hashed_password = bcrypt.hashpw(senha.encode('utf-8'), salt)
+
+cursor.execute('''
+    INSERT INTO users (name, email, password) 
+    VALUES (?, ?, ?)
+''', ("Seu Nome", "seu_email@exemplo.com", hashed_password))
+conn.commit()
 
 # Diretório para armazenar as fotos
 UPLOAD_DIRECTORY = "uploads"
