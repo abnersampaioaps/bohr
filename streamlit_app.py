@@ -109,7 +109,6 @@ if st.session_state.page == "login":
                     {"name": "username", "label": "Email"},
                     {"name": "password", "label": "Senha", "type": "password"}
                 ],
-                key='login_form_inner'  # Adicione uma chave única aqui
             )
             if authentication_status:
                 st.write(f'Bem-vindo *{name}*')
@@ -120,7 +119,7 @@ if st.session_state.page == "login":
         # Botão para mostrar o formulário de cadastro
         if st.button("Ainda não tenho cadastro"):
             st.session_state.show_registration = True
-            st.experimental_rerun()
+            st.rerun()
     else:
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
@@ -147,7 +146,7 @@ if st.session_state.page == "login":
                     conn.commit()
                     st.success("Conta criada com sucesso!")
                     st.session_state.show_registration = False  # Voltar para a página de login
-                    st.experimental_rerun()
+                    st.rerun()
 
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
@@ -257,4 +256,4 @@ if st.session_state.logged_in:
                     ''', (marca, modelo, ano, preco, quilometragem, foto_path, st.session_state.user_email))
                     conn.commit()
                     st.session_state.show_form = False 
-                    st.experimental_rerun()
+                    st.rerun()
