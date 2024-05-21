@@ -85,13 +85,12 @@ if st.session_state.page == "login":
 
     if opcao == "Login":
         name, authentication_status, username = authenticator.login(
-            'authentication_key',
-            fields=[
-                {"title": "Login de Usuário"},
-                {"name": "username", "label": "Email"},
-                {"name": "password", "label": "Senha", "type": "password"}
-            ]
-        )
+    fields=[
+        {"title": "Login de Usuário"},
+        {"name": "username", "label": "Email"},
+        {"name": "password", "label": "Senha", "type": "password"}
+    ]
+)
         if authentication_status:
             st.write(f'Bem-vindo *{name}*')
             st.session_state.page = "disponiveis"  # Redirecionar para a página "Disponíveis" após o login
