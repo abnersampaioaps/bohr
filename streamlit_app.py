@@ -57,7 +57,7 @@ def _is_bcrypt_hash(hash_string):
     return bool(bcrypt_regex.match(hash_string))
 
 # Configuração de autenticação
-cursor.execute("SELECT name, email, password FROM users")
+cursor.execute("SELECT name, email, CAST(password AS TEXT) FROM users") 
 data = cursor.fetchall()
 credentials = {
     "names": {user[1]: user[0] for user in data},
