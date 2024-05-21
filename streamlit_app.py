@@ -73,8 +73,14 @@ authenticator = Authenticate(
 )
 
 # Página de login
-name, authentication_status, username = authenticator.login('Login', 'main')
-
+name, authentication_status, username = authenticator.login(
+    'Login',
+    'main',
+    fields=[
+        {"name": "username", "label": "Email"},
+        {"name": "password", "label": "Senha", "type": "password"}
+    ]
+)
 
 if authentication_status:
     st.write(f'Bem-vindo *{name}*')
