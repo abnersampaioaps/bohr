@@ -75,7 +75,11 @@ authenticator = Authenticate(
     "key",          
     cookie_expiry_days=30  
 )
-
+# Inicializar o estado de login e página
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'page' not in st.session_state:  # Add this line to initialize the 'page' attribute
+    st.session_state.page = "login"
 # Página de login
 
 if st.session_state.page == "login":
