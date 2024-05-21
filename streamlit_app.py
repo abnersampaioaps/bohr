@@ -4,7 +4,7 @@ import sqlite3
 from PIL import Image
 import os
 from streamlit_authenticator import Authenticate
-from streamlit_authenticator.utils import Hasher
+from streamlit_authenticator import HashingUtils
 import bcrypt
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
@@ -61,7 +61,7 @@ credentials = {
     "passwords": {user[1]: user[2] for user in data} # email: password
 }
 
-hasher = Hasher(credentials['passwords']) # Criar o objeto Hasher
+hasher = HashingUtils(credentials['passwords']) # Criar o objeto Hasher
 hashed_passwords = hasher.generate() # Gerar os hashes
 
 authenticator = Authenticate(
