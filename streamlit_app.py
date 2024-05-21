@@ -56,6 +56,10 @@ def _is_bcrypt_hash(hash_string):
     bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
     return bool(bcrypt_regex.match(hash_string))
 
+# Inicializar o estado de login
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
 # Configuração de autenticação
 cursor.execute("SELECT name, email, CAST(password AS TEXT) FROM users") 
 data = cursor.fetchall()
