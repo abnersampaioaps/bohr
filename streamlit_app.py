@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 from PIL import Image
 import os
-from streamlit_authenticator import authenticate, Authenticate
+from streamlit_authenticator import Authenticate, Hasher
 import bcrypt
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
