@@ -77,9 +77,7 @@ authenticator = Authenticate(
 )
 
 # Página de login
-authentication_status = None # Inicializa a variável com None
-name = None
-username = None
+
 if 'page' not in st.session_state:
     st.session_state.page = "login"
 
@@ -239,8 +237,3 @@ if st.session_state.logged_in:
                     conn.commit()
                     st.session_state.show_form = False 
                     st.experimental_rerun() 
-
-elif authentication_status == False:
-    st.error('Username/password is incorrect')
-# elif authentication_status == None:
-#     st.warning('Please enter your username and password')
