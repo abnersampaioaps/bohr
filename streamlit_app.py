@@ -236,4 +236,9 @@ if st.session_state.logged_in:
                     ''', (marca, modelo, ano, preco, quilometragem, foto_path, st.session_state.user_email))
                     conn.commit()
                     st.session_state.show_form = False 
-                    st.experimental_rerun() 
+                    st.rerun()
+
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.session_state.page == "login"
