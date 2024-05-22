@@ -71,7 +71,7 @@ authenticator = Authenticate(
     "key",          
     cookie_expiry_days=30  
 )
-
+authentication_status == None
 # Inicializar o estado de login e página
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
