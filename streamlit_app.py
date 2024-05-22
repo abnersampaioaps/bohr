@@ -11,7 +11,7 @@ import re
 st.markdown(
     """
     <style>
-    #stToolbar {visibility: hidden;}
+    [data-testid="stToolbar"] {visibility: hidden;}
     footer {visibility: hidden;}
     </style>
     """,
