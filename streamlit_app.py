@@ -99,7 +99,7 @@ if st.session_state.page == "login":
     with col1:
         opcao = st.radio("", ["Login"], horizontal=True)
     with col2:
-        opcao = st.radio(" ", ["Cadastro"], horizontal=True)
+        opcao = st.radio("", ["Cadastro"], horizontal=True)
 
     if opcao == "Login":
         name, authentication_status, username = authenticator.login(
