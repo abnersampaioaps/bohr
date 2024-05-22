@@ -94,12 +94,11 @@ authenticator = stauth.Authenticate(
 if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
-    # Opções de login ou cadastro (lado a lado)
-    col1, col2 = st.columns(2)
-    with col1:
-        opcao = st.radio("", ["Login"], horizontal=True, key="opcao_login")  # Adicione uma chave única
-    with col2:
-        st.radio(" ", ["Cadastro"], horizontal=True, key="opcao_cadastro") 
+        # Opções de login ou cadastro (lado a lado)
+    opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"], horizontal=True, key="opcao")
+
+    col1, col2 = st.columns(2)  # Divide a área em duas colunas
+ 
 
     if opcao == "Login":
         name, authentication_status, username = authenticator.login(
