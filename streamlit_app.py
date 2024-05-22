@@ -94,17 +94,22 @@ authenticator = stauth.Authenticate(
 if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
-    # Opções de login ou cadastro
-    opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"])
+    # Opções de login ou cadastro (lado a lado)
+    col1, col2 = st.columns(2)
+    with col1:
+        opcao = st.radio("", ["Login"], horizontal=True)
+    with col2:
+        opcao = st.radio(" ", ["Cadastro"], horizontal=True)
 
     if opcao == "Login":
-        name, authentication_status, username = authenticator.login('main', fields={
-        'Form name': 'Login',
-        'Username': 'Username',
-        'Password': 'Password',
-        'Login': 'Login'
-        })
-
+        name, authentication_status, username = authenticator.login(
+            'authentication_key',
+            fields=[
+                {"title": "Login de Usuário"},
+                {"name": "username", "label": "Email"},
+                {"name": "password", "label": "Senha", "type": "password"}
+            ]
+        )
         if authentication_status:
             st.write(f'Bem-vindo *{name}*')
             st.session_state.logged_in = True
@@ -113,17 +118,9 @@ if st.session_state.page == "login":
             st.rerun()
         elif authentication_status == False:
             st.error('Username/password is incorrect')
+        # Removidos os botões extras
 
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Login"):
-                st.session_state.show_registration = False
-                st.rerun()
-        with col2:
-            if st.button("Cadastrar"):
-                st.session_state.show_registration = True
-                st.rerun()
-    else:
+    elif opcao == "Cadastro":
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
             nome = st.text_input("Nome")
