@@ -95,6 +95,7 @@ if st.session_state.page == "login":
     st.title("Login ou Cadastro")
 
     # Opções de login ou cadastro (lado a lado)
+    col1, col2 = st.columns(2)
     with col1:
         opcao = st.radio("", ["Login"], horizontal=True, key="opcao_login")  # Adicione uma chave única
     with col2:
