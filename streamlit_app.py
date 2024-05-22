@@ -104,6 +104,16 @@ authenticator = stauth.Authenticate(
 
 # Página de login
 if st.session_state.page == "login":
+    st.markdown(
+    """
+    <style>
+        header {
+            display: none;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
     st.title("Bem-vindo ao Repasse Car")
 
         # Opções de login ou cadastro (lado a lado)
