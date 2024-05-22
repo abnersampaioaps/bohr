@@ -92,7 +92,7 @@ authenticator = stauth.Authenticate(
 
 # Página de login
 if st.session_state.page == "login":
-    st.title("Login ou Cadastro")
+    st.title("Bem-vindo ao Repasse Car")
 
         # Opções de login ou cadastro (lado a lado)
     opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"], horizontal=True, key="opcao")
