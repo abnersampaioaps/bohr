@@ -120,7 +120,7 @@ if st.session_state.page == "login":
             st.error('Username/password is incorrect')
         # Removidos os botões extras
 
-    elif opcao == "Cadastro":
+    if opcao == "Cadastro":
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
             nome = st.text_input("Nome")
