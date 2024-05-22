@@ -4,6 +4,7 @@ import sqlite3
 from PIL import Image
 import os
 from streamlit_authenticator import Authenticate
+import streamlit_authenticator as stauth
 import bcrypt
 import re
 
