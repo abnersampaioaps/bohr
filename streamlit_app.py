@@ -153,6 +153,8 @@ if st.session_state.page == "login":
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
 if st.session_state.logged_in:
+     if st.session_state.authentication_status:
+        name = st.session_state['name']
     st.write(f'Bem-vindo *{name}*')
     st.title('Compartilhamento de Estoque de Carros')
 
