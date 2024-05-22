@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 from PIL import Image
 import os
-import streamlit_authenticator as stauth
+from streamlit_authenticator import Authenticate
 import bcrypt
 import re
 
@@ -56,6 +56,19 @@ def _is_bcrypt_hash(hash_string):
     bcrypt_regex = re.compile(r"^\$2[aby]\$\d+\$.{53}$")
     return bool(bcrypt_regex.match(hash_string.decode('utf-8')))
 
+
+# Inicializar o estado de login e página
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
+if 'show_registration' not in st.session_state:
+    st.session_state.show_registration = False
+if 'name' not in st.session_state:
+    st.session_state.name = ""
+if 'authentication_status' not in st.session_state:
+    st.session_state.authentication_status = None
+
 # Configuração de autenticação
 cursor.execute("SELECT name, email, password FROM users")
 data = cursor.fetchall()
@@ -76,30 +89,27 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-# Inicializar o estado de login e página
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-if 'show_registration' not in st.session_state:
-    st.session_state.show_registration = False
-
+# Página de login
 if st.session_state.page == "login":
-    st.title("Login")
+    st.title("Login ou Cadastro")
 
-    if not st.session_state.show_registration:
+    # Opções de login ou cadastro
+    opcao = st.radio("Selecione uma opção:", ["Login", "Cadastro"])
+
+    if opcao == "Login":
         name, authentication_status, username = authenticator.login('main', fields={
-    'Form name': 'Login',
-    'Username': 'Username',
-    'Password': 'Password',
-    'Login': 'Login'
-})
+        'Form name': 'Login',
+        'Username': 'Username',
+        'Password': 'Password',
+        'Login': 'Login'
+        })
 
         if authentication_status:
+            st.write(f'Bem-vindo *{name}*')
             st.session_state.logged_in = True
             st.session_state.page = "disponiveis"
             st.session_state.user_email = username
-            st.experimental_rerun()
+            st.rerun()
         elif authentication_status == False:
             st.error('Username/password is incorrect')
 
@@ -107,11 +117,11 @@ if st.session_state.page == "login":
         with col1:
             if st.button("Login"):
                 st.session_state.show_registration = False
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Cadastrar"):
                 st.session_state.show_registration = True
-                st.experimental_rerun()
+                st.rerun()
     else:
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
@@ -137,8 +147,8 @@ if st.session_state.page == "login":
                     ''', (nome, email, hashed_password.decode('utf-8')))
                     conn.commit()
                     st.success("Conta criada com sucesso!")
-                    st.session_state.show_registration = False  # Voltar para a página de login
-                    st.experimental_rerun()
+                    st.session_state.show_registration = False # Voltar para a página de login
+                    st.rerun()
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
 if st.session_state.logged_in:
@@ -247,4 +257,4 @@ if st.session_state.logged_in:
                     ''', (marca, modelo, ano, preco, quilometragem, foto_path, st.session_state.user_email))
                     conn.commit()
                     st.session_state.show_form = False
-                    st.experimental_rerun()
+                    st.rerun()
