@@ -11,14 +11,12 @@ import re
 st.markdown(
     """
     <style>
-        header {
-            display: none;
-        }
+    #stToolbar {visibility: hidden;}
+    footer {visibility: hidden;}
     </style>
     """,
     unsafe_allow_html=True,
 )
-
 
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
