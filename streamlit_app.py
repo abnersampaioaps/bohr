@@ -71,7 +71,7 @@ authenticator = Authenticate(
     "key",          
     cookie_expiry_days=30  
 )
-authentication_status = None
+
 # Inicializar o estado de login e página
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -80,44 +80,32 @@ if 'page' not in st.session_state:
 if 'show_registration' not in st.session_state:
     st.session_state.show_registration = False
 
-# if authentication_status:
-#     st.session_state.logged_in = True
-#     st.session_state.user_email = username  # Definir email do usuário no session state
-#     st.session_state.page = "disponiveis"
-#     st.rerun()
-# elif authentication_status == False:
-#     st.error('Username/password is incorrect')
-
 if st.session_state.page == "login":
     st.title("Login")
 
     if not st.session_state.show_registration:
-        if authentication_status == None:
-            # Opção de login
-            st.subheader("Login")
-            name, authentication_status, username = authenticator.login(
-                fields=[
-                    {"name": "username", "label": "Email"},
-                    {"name": "password", "label": "Senha", "type": "password"}
-                ],
-            )
-            if authentication_status:
-                st.write(f'Bem-vindo *{name}*')
-                st.session_state.page = "disponiveis"
-                st.experimental_rerun()
-            elif authentication_status == False:
-                st.error('Username/password is incorrect')
-        
+        authentication_status = None
+        name, authentication_status, username = authenticator.login(
+            "Login", "main"
+        )
+
+        if authentication_status:
+            st.session_state.logged_in = True
+            st.session_state.page = "disponiveis"
+            st.session_state.user_email = username
+            st.rerun()
+        elif authentication_status == False:
+            st.error('Username/password is incorrect')
+
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Login"):
                 st.session_state.show_registration = False
-                st.experimental_rerun()
+                st.rerun()
         with col2:
             if st.button("Cadastrar"):
                 st.session_state.show_registration = True
                 st.rerun()
-
     else:
         st.subheader("Criar Nova Conta")
         with st.form("cadastro_form"):
@@ -145,7 +133,6 @@ if st.session_state.page == "login":
                     st.success("Conta criada com sucesso!")
                     st.session_state.show_registration = False  # Voltar para a página de login
                     st.rerun()
-
 
 # Restante do aplicativo (visível apenas se o usuário estiver logado)
 if st.session_state.logged_in:
