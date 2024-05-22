@@ -18,6 +18,24 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.components.v1.html(
+    """
+    <script>
+        // Esconder o botão "Fork this app"
+        const forkButton = document.querySelector('.stButton button[kind="secondary"]');
+        if (forkButton) {
+            forkButton.style.display = 'none';
+        }
+
+        // Esconder o botão "View source on GitHub"
+        const githubButton = document.querySelector('.stButton button[kind="primary"]');
+        if (githubButton) {
+            githubButton.style.display = 'none';
+        }
+    </script>
+    """
+)
+
 
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
