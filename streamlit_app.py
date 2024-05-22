@@ -88,7 +88,12 @@ if st.session_state.page == "login":
     st.title("Login")
 
     if not st.session_state.show_registration:
-        name, authentication_status, username = authenticator.login("Login", "main")
+        name, authentication_status, username = authenticator.login('main', fields={
+    'Form name': 'Login',
+    'Username': 'Username',
+    'Password': 'Password',
+    'Login': 'Login'
+})
 
         if authentication_status:
             st.session_state.logged_in = True
