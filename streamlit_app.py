@@ -8,6 +8,18 @@ import streamlit_authenticator as stauth
 import bcrypt
 import re
 
+st.markdown(
+    """
+    <style>
+        div.stButton {
+            display: none;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # Conectar ao banco de dados (ou criar se não existir)
 conn = sqlite3.connect('carros.db')
 cursor = conn.cursor()
