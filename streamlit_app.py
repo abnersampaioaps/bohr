@@ -103,7 +103,6 @@ if st.session_state.page == "login":
 
     if opcao == "Login":
         name, authentication_status, username = authenticator.login(
-            'authentication_key',
             fields=[
                 {"title": "Login de Usuário"},
                 {"name": "username", "label": "Email"},
