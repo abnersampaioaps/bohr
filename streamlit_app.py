@@ -176,6 +176,7 @@ if st.session_state.logged_in:
             # Adicionar botão de logout no menu lateral
         if st.sidebar.button("Logout"):
             authenticator.logout('Logout', 'main')
+            st.session_state.clear()  # Limpar o estado da sessão
             st.session_state.page = "login"
             st.rerun()
 
