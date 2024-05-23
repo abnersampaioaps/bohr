@@ -173,6 +173,11 @@ if st.session_state.logged_in:
 
         st.write(f'Bem-vindo *{name}*')
         st.title('Compartilhamento de Estoque de Carros')
+            # Adicionar botão de logout no menu lateral
+        if st.sidebar.button("Logout"):
+            authenticator.logout('Logout', 'main')
+            st.session_state.page = "login"
+            st.rerun()
 
         # Menu lateral
         st.sidebar.title("Menu")
